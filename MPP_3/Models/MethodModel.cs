@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace AssemblyExplorer.Models
 {
@@ -22,15 +17,85 @@ namespace AssemblyExplorer.Models
             string res = "";
             res += SetModifier(this.method.Attributes);
             res += SetKeywords(this.method.Attributes);
+            res += SetGenericParams(this.method.GetGenericArguments());
             res += this.method.Name;
+            res += SetParams(this.method.GetParameters());
+            res += " : ";
+            res += SetReturnType(this.method.ReturnType);
+            return res;
+        }
 
-            var parameters = this.method.GetParameters();
+        private string SetGenericParams(Type[] types)
+        {
+            string res = "";
+            for (int i = 0; i < types.Length; i++) { 
+                if(i==0) res += "<";
+                res += types[i].Name;
+                if (i == types.Length - 1) 
+                    res += ">";
+                else
+                    res += ", ";
+            }
+            return res;
+        }
+
+        private string SetReturnType(Type returnType)
+        {
+            string res = "";
+            if (returnType.IsGenericType)
+                res += CreateGenericTypeString(returnType);
+            else
+                res = returnType.Name;
+            return res;
+        }
+
+        private string CreateGenericTypeString(Type type)
+        {
+            string res = "";
+            int len = type.Name.ElementAt(type.Name.IndexOf('`') + 1) - '0';
+            var a = type.GetGenericTypeDefinition();
+            if (a != null)
+            {
+                res += a.Name;
+                Type[] t = type.GenericTypeArguments;
+                while (res.Contains("`"))
+                {
+                    string s = "";
+                    for (int i = 0; i < len; i++)
+                    {
+                        if (i == 0)
+                            s = $"<{t[i].Name}";
+                        else
+                            s += $", {t[i].Name}";
+                    }
+                    s += ">";
+                    foreach (Type tmp in t)
+                    {
+                        if (tmp.IsGenericType)
+                        {
+                            s = s.Replace(tmp.Name, CreateGenericTypeString(tmp));
+                        }
+                    }
+                    res = res.Replace($"`{len}", s);
+
+                }
+            }
+            return res;
+        }
+
+        private string SetParams(ParameterInfo[] parameters) {
+            string res = "";
             int len = parameters.Length;
             if (len == 0) res += "()";
-            for (int i = 0; i < len; i++) {
-                if(i==0) res += "(";
+            for (int i = 0; i < len; i++)
+            {
+                if (i == 0) res += "(";
                 var param = parameters[i];
-                string tmp = param.ParameterType.Name;
+                string tmp = "";
+                if (param.ParameterType.IsGenericType)
+                    tmp += CreateGenericTypeString(param.ParameterType);
+                else
+                    tmp = param.ParameterType.Name;
                 if (param.Attributes.HasFlag(ParameterAttributes.In))
                 {
                     tmp = tmp.Replace("&", "");
@@ -39,6 +104,7 @@ namespace AssemblyExplorer.Models
                 }
                 else if (param.Attributes.HasFlag(ParameterAttributes.Out))
                 {
+
                     tmp = tmp.Replace("&", "");
                     res += "out ";
                     res += tmp;
@@ -47,6 +113,11 @@ namespace AssemblyExplorer.Models
                 {
                     tmp = tmp.Replace("&", "");
                     res += "ref ";
+                    res += tmp;
+                }
+                else if(param.ParameterType.IsArray && param.IsDefined(typeof(ParamArrayAttribute), false))
+                {
+                    res += "params ";
                     res += tmp;
                 }
                 else
@@ -59,7 +130,7 @@ namespace AssemblyExplorer.Models
                 {
                     res += " = ";
                     var def = param.DefaultValue;
-                    if(def == null)
+                    if (def == null)
                         res += "null";
                     else
                         res += def.ToString();
@@ -69,8 +140,6 @@ namespace AssemblyExplorer.Models
                 else
                     res += ", ";
             }
-            res += " : ";
-            res += this.method.ReturnType.Name;
             return res;
         }
 

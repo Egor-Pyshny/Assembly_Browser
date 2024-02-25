@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MPP_3.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,50 +11,76 @@ namespace AssemblyExplorer.Models
     public class ClassModel
     {
         private Type _class;
-        public List<MethodModel> methods;
-        public List<string> methodsS = new List<string>();
+        private List<MethodModel> _methods;
+        private List<FieldModel> _fields;
+        private List<PropertyModel> _properties;
+        public List<string> methods;
         public List<string> fields;
         public List<string> properties;
+        public List<string> members;
 
         public ClassModel(Type _class)
         {
             this._class = _class;
+            this._methods = new List<MethodModel>();
+            this._fields = new List<FieldModel>();
+            this._properties = new List<PropertyModel>();
+            this.methods = new List<string>();
+            this.fields = new List<string>();
+            this.properties = new List<string>();
+            this.members = new List<string>();
             FillMethods();
             FillFields();
             FillProperties();
+            FillMembers();
+        }
+
+        private void FillMembers()
+        {
+            foreach(var s in this.members) members.Add(s);
+            foreach(var s in this.fields) members.Add(s);
+            foreach(var s in this.properties) members.Add(s);
         }
 
         private void FillMethods()
         {
-            var _methods = this._class.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
-            foreach (MethodInfo method in _methods)
+            var __methods = this._class.GetMethods(BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
+            foreach (MethodInfo method in __methods)
             {
                 //methods.Add(new MethodModel(method));
                 if (!method.Attributes.HasFlag(MethodAttributes.SpecialName))
                 {
-                    var s = new MethodModel(method);
-                    if (method.IsGenericMethod) { 
-                        var asd = method.GetGenericArguments();
-                        var sdf = method.GetGenericMethodDefinition();
-                    }
-                    methodsS.Add(s.ToString());
+                    var m = new MethodModel(method);
+                    _methods.Add(m);
+                    methods.Add(m.ToString());
                 }
             }
         }
 
         private void FillFields()
         {
-            var fields = this._class.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            foreach (FieldInfo field in fields)
+            var __fields = this._class.GetFields(BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+            foreach (FieldInfo field in __fields)
             {
-                var s = new FieldModel(field);
-                methodsS.Add(s.ToString());
+                FieldModel s;
+                if (!field.Name.Contains(">k__BackingField"))
+                {
+                    var f = new FieldModel(field);
+                    _fields.Add(f);
+                    fields.Add(f.ToString());
+                }
             }
         }
 
         private void FillProperties()
         {
-
+            var __properties = this._class.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo property in __properties)
+            {
+                var p = new PropertyModel(property);
+                _properties.Add(p);
+                properties.Add(p.ToString());
+            }
         }
     }
 }
