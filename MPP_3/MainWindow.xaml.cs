@@ -23,8 +23,9 @@ namespace MPP_3
             InitializeComponent();
             Assembly assembly = Assembly.LoadFrom("C:\\Users\\Пользователь\\source\\repos\\MPP_2\\MPP_2\\bin\\Debug\\net8.0\\MPP_2.dll");
             Type[] types = assembly.GetTypes();
-            var o = types[2].GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
+            var o = types[2].GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static)[6];
+            o.Attributes.HasFlag(MethodAttributes.Final);
+            var s = o.GetParameters();
             var a = new AssemblyModel(assembly);
             var t = a.namespaces["-"].classes[2].methodsS;
         }

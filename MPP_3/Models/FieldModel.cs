@@ -10,65 +10,59 @@ namespace AssemblyExplorer.Models
 {
     public class FieldModel
     {
-        public string name;
-        public Type fieldType;
-        public FieldAttributes attributes;
+        public FieldInfo field;
 
         public FieldModel(FieldInfo field)
         {
-            this.attributes = field.Attributes;
-            this.name = field.Name;
-            this.fieldType = field.FieldType;
+            this.field = field;
         }
 
         public override string ToString()
         {
             string res = "";
-            if (this.attributes.HasFlag(FieldAttributes.FamORAssem))
+            if (this.field.Attributes.HasFlag(FieldAttributes.FamORAssem))
             {
                 res += "protected internal ";
             }
-            else if (this.attributes.HasFlag(FieldAttributes.Public))
+            else if (this.field.Attributes.HasFlag(FieldAttributes.Public))
             {
                 res += "public ";
             }
-            else if (this.attributes.HasFlag(FieldAttributes.Family))
+            else if (this.field.Attributes.HasFlag(FieldAttributes.Family))
             {
 
                 res += "protected ";
             }
-            else if (this.attributes.HasFlag(FieldAttributes.Assembly))
+            else if (this.field.Attributes.HasFlag(FieldAttributes.Assembly))
             {
 
                 res += "internal ";
             }
-            else if (this.attributes.HasFlag(FieldAttributes.Private))
+            else if (this.field.Attributes.HasFlag(FieldAttributes.Private))
             {
                 res += "private ";
             }
-            else if (this.attributes.HasFlag(FieldAttributes.FamANDAssem))
+            else if (this.field.Attributes.HasFlag(FieldAttributes.FamANDAssem))
             {
                 res += "private protected ";
             }
-            res += this.name;
+            res += this.field.Name;
             res += " : ";
-            res += this.fieldType.Name;
-
-            if (this.fieldType.IsGenericType)
-            {
-                res += CreateGenericTypeString(this.fieldType);
-            }
+            if (this.field.FieldType.IsGenericType)
+                res += CreateGenericTypeString(this.field.FieldType);
+            else
+                res += this.field.FieldType.Name;
             return res;
         }
 
         private string CreateGenericTypeString(Type type) {
             string res = "";
             int len = type.Name.ElementAt(type.Name.IndexOf('`')+1) - '0';
-            var a = this.fieldType.GetGenericTypeDefinition();
+            var a = type.GetGenericTypeDefinition();
             if (a != null)
             {
                 res += a.Name;
-                Type[] t = fieldType.GenericTypeArguments;
+                Type[] t = type.GenericTypeArguments;
                 while (res.Contains("`"))
                 {
                     string s = "";

@@ -25,13 +25,17 @@ namespace AssemblyExplorer.Models
 
         private void FillMethods()
         {
-            var _methods = this._class.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var _methods = this._class.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
             foreach (MethodInfo method in _methods)
             {
                 //methods.Add(new MethodModel(method));
                 if (!method.Attributes.HasFlag(MethodAttributes.SpecialName))
                 {
                     var s = new MethodModel(method);
+                    if (method.IsGenericMethod) { 
+                        var asd = method.GetGenericArguments();
+                        var sdf = method.GetGenericMethodDefinition();
+                    }
                     methodsS.Add(s.ToString());
                 }
             }
