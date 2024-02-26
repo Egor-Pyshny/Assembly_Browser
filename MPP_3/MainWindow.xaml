@@ -3,10 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MPP_3"
+        xmlns:local="clr-namespace:MPP_3" 
+        xmlns:models="clr-namespace:AssemblyExplorer.Models"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <Button Background="Black" Width="50" Height="50" Panel.ZIndex="1" Margin="579,0,171,384" Click="Button_Click"/>
+        <TreeView x:Name="TreeView" ItemsSource="{Binding Assemblies, UpdateSourceTrigger=PropertyChanged}"
+                  >
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type models:AssemblyModel}" ItemsSource="{Binding namespaces, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type models:NamespaceModel}" ItemsSource="{Binding classes, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type models:ClassModel}" ItemsSource="{Binding members, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type models:MemberModel}">
+                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
     </Grid>
 </Window>

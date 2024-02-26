@@ -4,10 +4,13 @@ namespace AssemblyExplorer.Models
 {
     public class MethodModel
     {
-        public MethodInfo method;
+        private MethodInfo method;
+
+        public string name { get; }
 
         public MethodModel(MethodInfo method)
         {
+            this.name = method.Name;
             this.method = method;
         }
 
@@ -185,7 +188,7 @@ namespace AssemblyExplorer.Models
             }
             else if (attributes.HasFlag(MethodAttributes.Final | MethodAttributes.Virtual))
             {
-                res += "sealed ovveride ";
+                res += "sealed override ";
             }
             else if (attributes.HasFlag(MethodAttributes.Virtual))
             {

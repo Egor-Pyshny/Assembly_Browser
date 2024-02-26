@@ -5,14 +5,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MPP_3.Models
+namespace AssemblyExplorer.Models
 {
     public class ConstructorModel
     {
-        public ConstructorInfo constructor;
+        private ConstructorInfo constructor;
+
+        public string name { get; }
 
         public ConstructorModel(ConstructorInfo constructor)
         {
+            this.name = constructor.Name;
             this.constructor = constructor;
         }
 
@@ -21,7 +24,7 @@ namespace MPP_3.Models
             string res = "";
             res += SetModifier(constructor.Attributes);
             res += SetKeywords(constructor.Attributes);
-            res += this.constructor.DeclaringType.Name;
+            res += this.constructor.DeclaringType!.Name;
             res += SetParams(this.constructor.GetParameters());
             return res;
         }

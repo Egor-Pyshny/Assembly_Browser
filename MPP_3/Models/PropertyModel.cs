@@ -7,15 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MPP_3.Models
+namespace AssemblyExplorer.Models
 {
     public class PropertyModel
     {
-        public PropertyInfo property;
-        private string[] modifiers;
+        private PropertyInfo property;
+        private string[] modifiers = [];
+
+        public string name { get; }
 
         public PropertyModel(PropertyInfo property)
         {
+            this.name = property.Name;
             this.property = property;
         }
 
@@ -77,7 +80,7 @@ namespace MPP_3.Models
             return res;
         }
 
-        private string SetSetter(MethodInfo setter)
+        private string SetSetter(MethodInfo? setter)
         {
             if (setter == null) return "";
             string res = "";
@@ -87,7 +90,7 @@ namespace MPP_3.Models
             return res;
         }
 
-        private string SetGetter(MethodInfo getter)
+        private string SetGetter(MethodInfo? getter)
         {
             if (getter == null) return "";
             string res = "";

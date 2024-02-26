@@ -8,8 +8,8 @@ namespace AssemblyExplorer.Models
 {
     public class NamespaceModel
     {
-        public string name;
-        public List<ClassModel> classes;
+        public string name { get; }
+        public List<ClassModel> classes { get; }
 
         public NamespaceModel(string name)
         { 
