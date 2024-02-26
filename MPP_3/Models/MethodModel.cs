@@ -6,7 +6,6 @@ namespace AssemblyExplorer.Models
     {
         public MethodInfo method;
 
-
         public MethodModel(MethodInfo method)
         {
             this.method = method;
