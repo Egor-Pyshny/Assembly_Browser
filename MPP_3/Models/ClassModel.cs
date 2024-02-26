@@ -10,6 +10,7 @@ namespace AssemblyExplorer.Models
 {
     public class ClassModel
     {
+        public string name;
         private Type _class;
         private List<MethodModel> _methods;
         private List<ConstructorModel> _constructors;
@@ -23,6 +24,7 @@ namespace AssemblyExplorer.Models
 
         public ClassModel(Type _class)
         {
+            this.name = _class.Name;
             this._class = _class;
             this._methods = new List<MethodModel>();
             this._constructors = new List<ConstructorModel>();
