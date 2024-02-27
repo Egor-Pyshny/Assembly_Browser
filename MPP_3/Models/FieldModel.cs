@@ -4,13 +4,10 @@ namespace AssemblyExplorer.Models
 {
     public class FieldModel
     {
-        private FieldInfo field;
-
-        public string name { get; }
+        internal FieldInfo field;
 
         public FieldModel(FieldInfo field)
         {
-            this.name = field.Name;
             this.field = field;
         }
 

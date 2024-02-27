@@ -14,10 +14,11 @@ namespace MPP_3
     {
         public ObservableCollection<AssemblyModel> Folders { get; set; } = new();
 
+
         public MainWindow()
         {
             InitializeComponent();
-            Assembly assembly = Assembly.LoadFrom("C:\\Users\\Пользователь\\source\\repos\\MPP_2\\MPP_2\\bin\\Debug\\net8.0\\MPP_2.dll");
+            Assembly assembly = Assembly.LoadFrom("C:\\Users\\user\\Downloads\\Telegram Desktop\\MPP_2.dll");
             Type[] types = assembly.GetTypes();
             var a = new AssemblyModel(assembly);
             MyViewModel v = new MyViewModel();
@@ -58,11 +59,6 @@ namespace MPP_3
                 }
             }
             return res;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            int a = 5;
         }
     }
 }

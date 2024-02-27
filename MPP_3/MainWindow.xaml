@@ -5,24 +5,55 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MPP_3" 
         xmlns:models="clr-namespace:AssemblyExplorer.Models"
+        xmlns:vm="clr-namespace:MPP_3.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Background="Black" Width="50" Height="50" Panel.ZIndex="1" Margin="579,0,171,384" Click="Button_Click"/>
         <TreeView x:Name="TreeView" ItemsSource="{Binding Assemblies, UpdateSourceTrigger=PropertyChanged}"
                   >
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type models:AssemblyModel}" ItemsSource="{Binding namespaces, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+
+                <HierarchicalDataTemplate DataType="{x:Type vm:AssemblyNode}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="C:\Users\user\Source\Repos\Egor-Pyshny\MPP_3\MPP_3\Images\Assembly.png"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type models:NamespaceModel}" ItemsSource="{Binding Classes, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                <HierarchicalDataTemplate DataType="{x:Type vm:NamespaceNode}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="C:\Users\user\Source\Repos\Egor-Pyshny\MPP_3\MPP_3\Images\Namespace.png"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type models:ClassModel}" ItemsSource="{Binding InnerClasses, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                <HierarchicalDataTemplate DataType="{x:Type vm:ClassNode}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="{Binding ImagePath}"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
                 </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type models:MemberModel}">
-                    <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                <DataTemplate DataType="{x:Type vm:PropertyNode}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="C:\Users\user\Source\Repos\Egor-Pyshny\MPP_3\MPP_3\Images\Property.png"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:FieldNode}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="{Binding ImagePath}"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:ConstructorNode}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="C:\Users\user\Source\Repos\Egor-Pyshny\MPP_3\MPP_3\Images\Constructor.png"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:MethodNode}">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 3">
+                        <Image Source="{Binding ImagePath}"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="3 0 0 0" />
+                    </StackPanel>
                 </DataTemplate>
             </TreeView.Resources>
         </TreeView>

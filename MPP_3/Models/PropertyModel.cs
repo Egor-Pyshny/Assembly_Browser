@@ -11,14 +11,11 @@ namespace AssemblyExplorer.Models
 {
     public class PropertyModel
     {
-        private PropertyInfo property;
+        internal PropertyInfo property;
         private string[] modifiers = [];
-
-        public string name { get; }
 
         public PropertyModel(PropertyInfo property)
         {
-            this.name = property.Name;
             this.property = property;
         }
 
@@ -72,7 +69,7 @@ namespace AssemblyExplorer.Models
                 modifiers[1] = "";
             res = res.Replace("<modifier>", modifier);
             res = res.Split('{')[0];
-            res += $"{{ {modifiers[0]}get; {modifiers[1]}set}}";
+            res += $"{{ {modifiers[0]} get; {modifiers[1]} set}}";
         }
 
         private string SetProps(PropertyInfo property)

@@ -12,10 +12,10 @@ namespace AssemblyExplorer.Models
     {
         internal Type _class;
         public NamespaceModel _namespace;
-        private List<MethodModel> _methods;
-        private List<ConstructorModel> _constructors;
-        private List<FieldModel> _fields;
-        private List<PropertyModel> _properties;
+        internal List<MethodModel> _methods { get; private set; }
+        internal List<ConstructorModel> _constructors { get; private set; }
+        internal List<FieldModel> _fields { get; private set; }
+        internal List<PropertyModel> _properties { get; private set; }
         internal List<ClassModel> innerClasses;
 
         public string name { get; }

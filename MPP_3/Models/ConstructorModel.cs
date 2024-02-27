@@ -9,13 +9,10 @@ namespace AssemblyExplorer.Models
 {
     public class ConstructorModel
     {
-        private ConstructorInfo constructor;
-
-        public string name { get; }
+        internal ConstructorInfo constructor;
 
         public ConstructorModel(ConstructorInfo constructor)
         {
-            this.name = constructor.Name;
             this.constructor = constructor;
         }
 

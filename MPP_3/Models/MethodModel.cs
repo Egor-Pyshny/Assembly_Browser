@@ -4,15 +4,12 @@ namespace AssemblyExplorer.Models
 {
     public class MethodModel
     {
-        private MethodInfo method;
-        private bool extension;
-
-        public string name { get; }
+        internal MethodInfo method;
+        internal bool extension;
 
         public MethodModel(MethodInfo method, bool extension = false)
         {
             this.extension = extension;
-            this.name = method.Name;
             this.method = method;
         }
 
