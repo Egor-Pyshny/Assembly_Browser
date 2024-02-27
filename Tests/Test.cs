@@ -40,16 +40,17 @@ namespace Tests
         public void ClassesNameTest()
         {
             var classes = res.namespaces[0].classes;
-            classes.Count.Should().Be(2);
+            classes.Count.Should().Be(3);
             classes[0].name.Should().Be("Program");
             classes[1].name.Should().Be("TestClass");
+            classes[2].name.Should().Be("MyExtensions");
         }
 
         [TestMethod]
         public void MethodSignatureTest()
         {
             var testClass = res.namespaces[0].classes[1];
-            testClass._methods.Count.Should().Be(1);
+            testClass._methods.Count.Should().Be(2);
             testClass._methods[0].ToString().Should().Be("protected aasd(ref Int32 asdas, in Int32 n, out Int32 a, Int32[] b = null, params Int32[] p) : Int32");
         }
 
@@ -87,6 +88,14 @@ namespace Tests
             var testClass2 = testClass.innerClasses[0];
             testClass2.innerClasses.Count.Should().Be(1);
             testClass2.innerClasses[0].name.Should().Be("En");
+        }
+
+        [TestMethod]
+        public void ExtensionSignatureTest()
+        {
+            var testClass = res.namespaces[0].classes[1];
+            testClass._methods.Count.Should().Be(2);
+            testClass._methods[1].ToString().Should().Be("extended from MyExtensions public static WordCount(TestClass str) : Int32");
         }
     }
 }

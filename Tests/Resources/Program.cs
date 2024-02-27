@@ -26,3 +26,10 @@ public class TestClass
     protected int aasd(ref int asdas, in int n, out int a, int[] b = null, params int[] p) { return a = 5; }
 
 }
+public static class MyExtensions
+{
+    public static int WordCount(this TestClass str)
+    {
+        return 5;
+    }
+}
