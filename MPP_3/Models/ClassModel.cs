@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,18 +10,23 @@ namespace AssemblyExplorer.Models
 {
     public class ClassModel
     {
-        private Type _class;
+        internal Type _class;
+        public NamespaceModel _namespace;
         private List<MethodModel> _methods;
         private List<ConstructorModel> _constructors;
         private List<FieldModel> _fields;
         private List<PropertyModel> _properties;
+        internal List<ClassModel> innerClasses;
 
         public string name { get; }
         public List<MemberModel> members { get; }
+        public List<ClassModel> InnerClasses { get{return innerClasses;} }
 
-        public ClassModel(Type _class)
+        public ClassModel(Type _class, NamespaceModel _namespace)
         {
             this._class = _class;
+            this._namespace = _namespace;
+            this.innerClasses = new List<ClassModel>();
             this.name = GetName();
             this._methods = new List<MethodModel>();
             this._constructors = new List<ConstructorModel>();
@@ -76,6 +82,9 @@ namespace AssemblyExplorer.Models
             foreach (MethodInfo method in __methods)
             {
                 //methods.Add(new MethodModel(method));
+                if (method.IsDefined(typeof(ExtensionAttribute), false)) {
+                    this._namespace.assembly.extensions.Add(method);
+                }
                 if (!method.Attributes.HasFlag(MethodAttributes.SpecialName))
                 {
                     var m = new MethodModel(method);
@@ -86,7 +95,11 @@ namespace AssemblyExplorer.Models
 
         private void FillFields()
         {
-            var __fields = this._class.GetFields(BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+            var __fields = this._class.GetFields(BindingFlags.Instance | 
+                BindingFlags.Static | BindingFlags.Public | 
+                BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            if (_class.Name.Contains("En1"))
+            { _ = 5; }
             foreach (FieldInfo field in __fields)
             {
                 if (!field.Name.Contains(">k__BackingField"))
@@ -99,12 +112,21 @@ namespace AssemblyExplorer.Models
 
         private void FillProperties()
         {
-            var __properties = this._class.GetProperties(BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+            var __properties = this._class.GetProperties(BindingFlags.Instance |
+                BindingFlags.Static | BindingFlags.Public |
+                BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             foreach (PropertyInfo property in __properties)
             {
                 var p = new PropertyModel(property);
                 _properties.Add(p);
             }
+        }
+
+        internal void AddExtensionMethod(MethodInfo item)
+        {
+            var m = new MethodModel(item, true);
+            this._methods.Add(m);
+            this.members.Add(new MemberModel(m.ToString()));
         }
     }
 }

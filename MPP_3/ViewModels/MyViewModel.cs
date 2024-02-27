@@ -49,4 +49,5 @@ namespace MPP_3.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
+
 }

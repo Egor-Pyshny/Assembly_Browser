@@ -15,10 +15,10 @@
                 <HierarchicalDataTemplate DataType="{x:Type models:AssemblyModel}" ItemsSource="{Binding namespaces, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type models:NamespaceModel}" ItemsSource="{Binding classes, UpdateSourceTrigger=PropertyChanged}">
+                <HierarchicalDataTemplate DataType="{x:Type models:NamespaceModel}" ItemsSource="{Binding Classes, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type models:ClassModel}" ItemsSource="{Binding members, UpdateSourceTrigger=PropertyChanged}">
+                <HierarchicalDataTemplate DataType="{x:Type models:ClassModel}" ItemsSource="{Binding InnerClasses, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="3 0 0 0" />
                 </HierarchicalDataTemplate>
                 <DataTemplate DataType="{x:Type models:MemberModel}">

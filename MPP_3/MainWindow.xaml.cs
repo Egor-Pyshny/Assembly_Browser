@@ -2,6 +2,7 @@
 using MPP_3.ViewModel;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace MPP_3
@@ -18,11 +19,6 @@ namespace MPP_3
             InitializeComponent();
             Assembly assembly = Assembly.LoadFrom("C:\\Users\\Пользователь\\source\\repos\\MPP_2\\MPP_2\\bin\\Debug\\net8.0\\MPP_2.dll");
             Type[] types = assembly.GetTypes();
-            /*var o = types[2].GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static)[6];
-            var asdsad=o.GetParameters();
-            var s = o.GetParameters();
-            var f1 = s[3].IsDefined(typeof(ParamArrayAttribute), false);
-            var f2 = s[4].IsDefined(typeof(ParamArrayAttribute), false);*/
             var a = new AssemblyModel(assembly);
             MyViewModel v = new MyViewModel();
             v.add(a);

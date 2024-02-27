@@ -5,11 +5,13 @@ namespace AssemblyExplorer.Models
     public class MethodModel
     {
         private MethodInfo method;
+        private bool extension;
 
         public string name { get; }
 
-        public MethodModel(MethodInfo method)
+        public MethodModel(MethodInfo method, bool extension = false)
         {
+            this.extension = extension;
             this.name = method.Name;
             this.method = method;
         }
@@ -17,6 +19,9 @@ namespace AssemblyExplorer.Models
         public override string ToString()
         {
             string res = "";
+            if (this.extension) {
+                res += $"extended from {this.method.DeclaringType.FullName} ";
+            }
             res += SetModifier(this.method.Attributes);
             res += SetKeywords(this.method.Attributes);
             res += SetGenericParams(this.method.GetGenericArguments());

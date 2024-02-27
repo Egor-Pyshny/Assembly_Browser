@@ -28,6 +28,11 @@ namespace AssemblyExplorer.Models
             string res = "";
             res += "<modifier> ";
             res += SetKeywords();
+            if (this.property.PropertyType.IsGenericType)
+                res += CreateGenericTypeString(this.property.PropertyType);
+            else
+                res += this.property.PropertyType.Name;
+            res += " ";
             res += property.Name;
             res += SetProps(property);
             FormatString(ref res);
