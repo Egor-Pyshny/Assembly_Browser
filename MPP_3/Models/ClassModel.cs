@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MPP_3.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,6 +17,7 @@ namespace AssemblyExplorer.Models
         internal List<ConstructorModel> _constructors { get; private set; }
         internal List<FieldModel> _fields { get; private set; }
         internal List<PropertyModel> _properties { get; private set; }
+        internal List<EventModel> _events { get; private set; }
         internal List<ClassModel> innerClasses;
 
         public string name { get; }
@@ -32,13 +34,26 @@ namespace AssemblyExplorer.Models
             this._constructors = new List<ConstructorModel>();
             this._fields = new List<FieldModel>();
             this._properties = new List<PropertyModel>();
+            this._events = new List<EventModel>();
             this.members = new List<MemberModel>();
             FillConstructors();
             FillMethods();
             FillFields();
             FillProperties();
             FillMembers();
+            FillEvents();
         }
+
+        private void FillEvents()
+        {
+            var __events = this._class.GetEvents(BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
+            foreach (EventInfo ev in __events)
+            {
+                var c = new EventModel(ev);
+                _events.Add(c);
+            }
+        }
+
         private string GetName()
         {
             string res = _class.Name;

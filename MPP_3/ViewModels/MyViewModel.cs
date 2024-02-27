@@ -14,6 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
 using Image = System.Windows.Controls.Image;
 using System.Windows.Media.Imaging;
+using MPP_3.Models;
 
 namespace MPP_3.ViewModel
 {
@@ -142,11 +143,32 @@ namespace MPP_3.ViewModel
             {
                 Items.Add(new MethodNode(item));
             }
+            foreach (var item in cls._events)
+            {
+                Items.Add(new EventNode(item));
+            }
         }
         public List<INode> Items { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }
         
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+    }
+
+    public class EventNode : INode
+    {
+        public EventNode(EventModel eventModel)
+        {
+            this.Name = eventModel.ToString();            
+        }
+        public string Name { get; set; }
+        public string ImagePath { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
