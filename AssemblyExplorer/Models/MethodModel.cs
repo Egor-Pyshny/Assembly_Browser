@@ -5,7 +5,7 @@ namespace AssemblyExplorer.Models
     public class MethodModel
     {
         internal MethodInfo method;
-        internal bool extension;
+        public bool extension { get; private set; }
 
         public MethodModel(MethodInfo method, bool extension = false)
         {
@@ -17,7 +17,7 @@ namespace AssemblyExplorer.Models
         {
             string res = "";
             if (this.extension) {
-                res += $"extended from {this.method.DeclaringType.FullName} ";
+                res += $"extended from {this.method.DeclaringType!.FullName} ";
             }
             res += SetModifier(this.method.Attributes);
             res += SetKeywords(this.method.Attributes);

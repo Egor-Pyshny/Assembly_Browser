@@ -4,7 +4,7 @@ namespace AssemblyExplorer.Models
 {
     public class AssemblyModel
     {
-        private Assembly assembly;
+        public Assembly assembly { get; private set; }
         private Dictionary<string, NamespaceModel> _namespaces;
         internal List<MethodInfo> extensions;
 
@@ -38,10 +38,10 @@ namespace AssemblyExplorer.Models
         {
             foreach (var item in extensions)
             {
-                string name = item.DeclaringType.Namespace ?? "-";
+                string name = item.DeclaringType!.Namespace ?? "-";
                 NamespaceModel namespaceModel = _namespaces[name];  
                 var t = item.GetParameters()[0].ParameterType.Name;
-                ClassModel classModel = namespaceModel.classes.Where(c => c.name == t).FirstOrDefault();
+                ClassModel? classModel = namespaceModel.classes.Where(c => c.name == t).FirstOrDefault();
                 if(classModel != null) classModel.AddExtensionMethod(item);
             }
         }

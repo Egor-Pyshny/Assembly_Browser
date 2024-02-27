@@ -4,7 +4,7 @@ namespace AssemblyExplorer.Models
 {
     public class FieldModel
     {
-        internal FieldInfo field;
+        public FieldInfo field { get; private set; }
 
         public FieldModel(FieldInfo field)
         {

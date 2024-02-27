@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
-namespace MPP_3.Models
+namespace AssemblyExplorer.Models
 {
     public class EventModel
     {
@@ -19,16 +14,12 @@ namespace MPP_3.Models
         public override string ToString()
         {
             string res = "";
-            res += SetModifier(_event.Attributes);
+            res += SetModifier(_event.AddMethod!.Attributes);
+            res += SetKeywords();
             res += _event.Name;
             res += SetProps(_event);
-            return res;
-        }
-
-        private string SetModifier(EventAttributes attributes)
-        {
-            string res = "";
-
+            res += " : ";
+            res += _event.EventHandlerType!.Name;
             return res;
         }
 
@@ -62,27 +53,20 @@ namespace MPP_3.Models
             return res;
         }
 
+        private string SetKeywords()
+        {
+            if (_event.AddMethod != null && _event.AddMethod.Attributes.HasFlag(MethodAttributes.Static))
+            {
+                return "static ";
+            }
+            else if (_event.RemoveMethod != null && _event.RemoveMethod.Attributes.HasFlag(MethodAttributes.Static))
+                return "static ";
+            return "";
+        }
+
         private string SetProps(EventInfo ev)
         {
-            string res = "";
-            res += " {";
-            res += SetAdd(ev.AddMethod);
-            res += SetRemove(ev.RemoveMethod);
-            res += "}";
-            return res;
-        }
-
-        private string SetRemove(MethodInfo? removeMethod)
-        {
-            string res = "";
-
-            return res;
-        }
-
-        private string SetAdd(MethodInfo? addMethod)
-        {
-            string res = "";
-
+            string res = "{ add {} remove {} }";
             return res;
         }
     }

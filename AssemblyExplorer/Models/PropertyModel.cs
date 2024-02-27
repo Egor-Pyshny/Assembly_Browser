@@ -69,7 +69,11 @@ namespace AssemblyExplorer.Models
                 modifiers[1] = "";
             res = res.Replace("<modifier>", modifier);
             res = res.Split('{')[0];
-            res += $"{{ {modifiers[0]} get; {modifiers[1]} set}}";
+            modifiers[0] = modifiers[0].Trim();
+            modifiers[1] = modifiers[1].Trim();
+            if (!(modifiers[0] == "")) modifiers[0] += " ";
+            if (!(modifiers[1] == "")) modifiers[1] += " ";
+            res += $"{{ {modifiers[0]}get; {modifiers[1]}set; }}";
         }
 
         private string SetProps(PropertyInfo property)

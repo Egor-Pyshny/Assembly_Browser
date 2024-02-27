@@ -1,26 +1,40 @@
 ﻿using AssemblyExplorer.Models;
 using MPP_3.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
-using Image = System.Windows.Controls.Image;
-using System.Windows.Media.Imaging;
-using MPP_3.Models;
 
-namespace MPP_3.ViewModel
+namespace AssemblyExplorer.ViewModel
 {
     public class MyViewModel : INotifyPropertyChanged
     {
-        private AssemblyModel selectedAssembly;
+        private string sourceString = "C:\\Users\\Пользователь\\source\\repos\\MPP_2\\MPP_2\\bin\\Debug\\net8.0\\MPP_2.dll";
+        public string SourceString
+        {
+            get { return sourceString; }
+            set
+            {
+                if (sourceString != value)
+                {
+                    sourceString = value;
+                    OnPropertyChanged(nameof(SourceString));
+                }
+            }
+        }
+
+        private AssemblyNode selectedAssm;
+        public AssemblyNode SelectedAssm
+        {
+            get { return selectedAssm; }
+            set
+            {
+                if (selectedAssm != value)
+                {
+                    selectedAssm = value;
+                }
+            }
+        }
 
         private RelayCommand addCommand;
         public RelayCommand AddCommand
@@ -31,19 +45,85 @@ namespace MPP_3.ViewModel
                   (addCommand = new RelayCommand(obj =>
                   {
                       string path = obj as string ?? throw new NullReferenceException("Path is null");
-                      Assembly a = Assembly.LoadFrom(path);
+                      Assembly? a = null;
+                      try
+                      {
+                          a = Assembly.LoadFrom(path);
+                      }
+                      catch (Exception) 
+                      {
+                          sourceString = "File not found";
+                          OnPropertyChanged(nameof(SourceString));
+                          return;
+                      }
                       AssemblyNode assembly = new AssemblyNode(new AssemblyModel(a));
-                      if(this.Assemblies.Where(asm => asm.Name == assembly.Name).ToList().Count==0)
-                          this.Assemblies.Add(assembly);
+                      if (this.assemblies.Where(asm => asm.Name == assembly.Name).ToList().Count == 0)
+                      {
+                          this.assemblies.Add(assembly);
+                      }
+                      OnPropertyChanged(nameof(Assemblies));
                   }));
             }
         }
 
-        public List<INode> Assemblies { get; }
+        private RelayCommand removeCommand;
+        public RelayCommand RemoveCommand
+        {
+            get
+            {
+                return removeCommand ??
+                  (removeCommand = new RelayCommand(obj =>
+                  {
+                      if (selectedAssm != null)
+                      {
+                          this.Assemblies.Remove(selectedAssm);
+                            OnPropertyChanged(nameof(Assemblies));
+                      }
+                      selectedAssm = null;
+                  }));
+            }
+        }
+
+        private RelayCommand refreshCommand;
+        public RelayCommand RefreshCommand
+        {
+            get
+            {
+                return removeCommand ??
+                  (removeCommand = new RelayCommand(obj =>
+                  {
+                      if (selectedAssm != null)
+                      {
+                          string path = selectedAssm.path;
+                          this.Assemblies.Remove(selectedAssm);
+                          Assembly a = Assembly.LoadFrom(path);
+                          AssemblyNode assembly = new AssemblyNode(new AssemblyModel(a));
+                          this.assemblies.Add(assembly);
+                          OnPropertyChanged(nameof(Assemblies));
+                      }
+                      selectedAssm = null;
+                  }));
+            }
+        }
+
+        private ObservableCollection<INode> assemblies;
+
+        public ObservableCollection<INode> Assemblies
+        {
+            get { return assemblies; }
+            set
+            {
+                if (assemblies != value)
+                {
+                    assemblies = value;
+                    OnPropertyChanged(nameof(Assemblies));
+                }
+            }
+        }
 
         public MyViewModel()
         {
-            this.Assemblies = new List<INode>();
+            this.assemblies = new ObservableCollection<INode>();
         }
 
         public void add(AssemblyModel a) { this.Assemblies.Add(new AssemblyNode(a)); }
@@ -65,11 +145,13 @@ namespace MPP_3.ViewModel
     {
         public AssemblyNode(AssemblyModel assemly) {
             this.Name = assemly.name;
+            this.path = assemly.assembly.Location;
             this.Items = new List<INode>();
             foreach (var n in assemly.namespaces) {
                 Items.Add(new NamespaceNode(n));
             }
         }
+        internal string path;
         public string Name { get; set; }
         public List<INode> Items { get; set; }
 
@@ -109,18 +191,22 @@ namespace MPP_3.ViewModel
             this.Items = new List<INode>();
             if (cls._class.IsEnum)
             {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\Enum.png";
+                ImagePath = "Images\\Enum.png";
             }
             else if (cls._class.IsSubclassOf(typeof(Delegate)))
             { 
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\Delegate.png"; 
+                ImagePath = "Images\\Delegate.png"; 
             }
             else if (cls._class.IsValueType)
             {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\Struct.png";
+                ImagePath = "Images\\Struct.png";
+            }
+            else if (cls._class.IsInterface)
+            {
+                ImagePath = "Images\\Interface.png";
             }
             else {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\Class.png";
+                ImagePath = "Images\\Class.png";
             }
 
             foreach (var item in cls.innerClasses)
@@ -167,7 +253,6 @@ namespace MPP_3.ViewModel
             this.Name = eventModel.ToString();            
         }
         public string Name { get; set; }
-        public string ImagePath { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -184,10 +269,10 @@ namespace MPP_3.ViewModel
             this.Name = method.ToString();
             if (method.extension)
             {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\ExtensionMethod.png";
+                ImagePath = "Images\\ExtensionMethod.png";
             }
             else {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\Method.png";
+                ImagePath = "Images\\Method.png";
             }
         }
         public string Name { get; set; }
@@ -206,13 +291,13 @@ namespace MPP_3.ViewModel
         public FieldNode(FieldModel field)
         {
             this.Name = field.ToString();
-            if (field.field.DeclaringType.IsEnum && !field.field.Name.Contains("value__"))
+            if (field.field.DeclaringType!.IsEnum && !field.field.Name.Contains("value__"))
             {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\EnumValue.png";
+                ImagePath = "Images\\EnumValue.png";
             }
             else
             {
-                ImagePath = "C:\\Users\\user\\Source\\Repos\\Egor-Pyshny\\MPP_3\\MPP_3\\Images\\Field.png";
+                ImagePath = "Images\\Field.png";
             }
         }
 

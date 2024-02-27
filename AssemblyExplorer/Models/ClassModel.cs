@@ -1,24 +1,18 @@
-﻿using MPP_3.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssemblyExplorer.Models
 {
     public class ClassModel
     {
-        internal Type _class;
+        public Type _class { get; private set; }
         public NamespaceModel _namespace;
-        internal List<MethodModel> _methods { get; private set; }
-        internal List<ConstructorModel> _constructors { get; private set; }
-        internal List<FieldModel> _fields { get; private set; }
-        internal List<PropertyModel> _properties { get; private set; }
-        internal List<EventModel> _events { get; private set; }
-        internal List<ClassModel> innerClasses;
+        public List<MethodModel> _methods { get; private set; }
+        public List<ConstructorModel> _constructors { get; private set; }
+        public List<FieldModel> _fields { get; private set; }
+        public List<PropertyModel> _properties { get; private set; }
+        public List<EventModel> _events { get; private set; }
+        public List<ClassModel> innerClasses;
 
         public string name { get; }
         public List<MemberModel> members { get; }
